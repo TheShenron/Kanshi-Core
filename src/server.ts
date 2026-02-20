@@ -1,5 +1,6 @@
-import dotenvFlow from 'dotenv-flow';
-dotenvFlow.config();
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config({ path: ".env.dev" });
+}
 
 import app from "./app";
 
