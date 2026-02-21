@@ -4,10 +4,14 @@ import { DateTime } from "luxon";
 import { StatusCodes } from "http-status-codes";
 import { Exam } from "../exams/exam.model";
 import { HiringDrive } from "../hiring-drives/hiringDrive.model";
+import jwt from 'jsonwebtoken';
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const startMyExam = async (req: Request, res: Response) => {
     const { examId, hiringDriveId } = req.body;
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
+    const userRole = req.user?.role;
 
     // 1) validate exam exists
     const exam = await Exam.findOne({ _id: examId, deletedAt: null }).select(
@@ -141,10 +145,22 @@ export const startMyExam = async (req: Request, res: Response) => {
         { $inc: { "candidates.$.attemptsUsed": 1 } }
     );
 
+    // generate exam token (exam duration + 5 min buffer)
+    const bufferMinutes = 5;
+    const totalMinutes = exam.duration + bufferMinutes;
+
+    const examToken = jwt.sign(
+        { id: String(userId), email: userEmail, role: userRole },
+        JWT_SECRET,
+        {
+            expiresIn: totalMinutes * 60,
+        }
+    );
+
     return res.json({
         success: true,
         message: "Exam started successfully",
-        data: result,
+        data: { result, examToken },
     });
 };
 
@@ -156,6 +172,17 @@ export const submitMyExam = async (req: Request, res: Response) => {
             message: "Result zip file is required.",
         });
     }
+
+    // ✅ file size validation (max 2MB)
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+
+    if (req.file.size > MAX_FILE_SIZE) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: "File size exceeds 2MB limit.",
+        });
+    }
+
 
     const { examId, hiringDriveId, score } = req.body;
     const userId = req.user?.id;
