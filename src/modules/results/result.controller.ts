@@ -146,7 +146,7 @@ export const startMyExam = async (req: Request, res: Response) => {
     );
 
     // generate exam token (exam duration + 5 min buffer)
-    const bufferMinutes = 5;
+    const bufferMinutes = 10;
     const totalMinutes = exam.duration + bufferMinutes;
 
     const examToken = jwt.sign(
