@@ -7,7 +7,6 @@ export const createExam = async (req: Request, res: Response) => {
         ...req.body,
         createdBy: req.user?.id,
         updatedBy: req.user?.id,
-        examZipFile: req.file?.buffer || undefined,
     });
     res.json({ success: true, data: exam });
 };
@@ -15,10 +14,6 @@ export const createExam = async (req: Request, res: Response) => {
 export const updateExam = async (req: Request, res: Response) => {
     const { id } = req.params;
     const userId = req.user?.id;
-
-    if (req.file?.buffer) {
-        req.body.examZipFile = req.file.buffer;
-    }
 
     const exam = await Exam.findOneAndUpdate(
         { _id: id, deletedAt: null },
@@ -70,7 +65,6 @@ export const getAllExams = async (req: Request, res: Response) => {
     const exams = await Exam.find({
         deletedAt: null
     })
-        .select("-examZipFile")
         .populate("createdBy", "name email")
         .populate("updatedBy", "name email")
         .sort({ createdAt: -1 });

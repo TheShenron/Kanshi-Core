@@ -16,6 +16,8 @@ export const createExamSchema = z.object({
         .max(180, "Duration cannot be more than 180 minutes"),
 
     isActive: z.coerce.boolean().default(true),
+
+    examRepoLink: z.url("Invalid URL format"),
 });
 
 export const deleteExamSchema = z.object({
@@ -32,4 +34,7 @@ export const updateExamSchema = z.object({
     duration: z.coerce.number().min(1).max(180).optional(),
 
     isActive: z.coerce.boolean().default(true),
+
+    examRepoLink: z.url("Invalid URL format").optional(),
+
 });

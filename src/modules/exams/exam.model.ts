@@ -27,13 +27,12 @@ const examSchema = new Schema(
             max: 180
         },
 
-        examZipFile: {
-            type: Buffer,
+        examRepoLink: {
+            type: String,
+            required: true,
+            trim: true,
+            match: [/^https?:\/\/.+/, "Please provide a valid URL"]
         },
-
-        // instructionFile: {
-        //     type: String,
-        // },
 
         createdBy: {
             type: Types.ObjectId,
