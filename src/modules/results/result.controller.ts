@@ -241,7 +241,7 @@ export const submitMyExam = async (req: Request, res: Response) => {
     // 4) validate time
     const now = DateTime.utc();
     const startedAt = DateTime.fromJSDate(attempt.startedAt).toUTC();
-    const deadline = startedAt.plus({ minutes: exam.duration + 5 });
+    const deadline = startedAt.plus({ minutes: exam.duration + 10 });
 
     if (now > deadline) {
         // mark expired
