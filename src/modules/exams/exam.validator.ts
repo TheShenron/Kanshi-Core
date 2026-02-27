@@ -2,22 +2,50 @@ import { z } from "zod";
 import { objectIdSchema } from "../hiring-drives/hiringDrive.validator";
 
 export const createExamSchema = z.object({
-    title: z.string().min(2, "Title is required").trim(),
+    isActive: z.coerce.boolean().default(true),
+    examRepoLink: z.url("Invalid URL format"),
+});
 
-    description: z.string().trim().optional(),
+export const questionConfigSchema = z.object({
+    examId: z.string().min(3),
 
-    difficulty: z.enum(["easy", "medium", "hard"], {
-        message: "Difficulty is required",
-    }),
+    title: z.string().min(2),
+
+    description: z.string().optional(),
+
+    difficulty: z.enum(["easy", "medium", "hard"]),
 
     duration: z.coerce
         .number()
-        .min(1, "Duration must be at least 1 minute")
-        .max(180, "Duration cannot be more than 180 minutes"),
+        .min(1)
+        .max(180),
 
-    isActive: z.coerce.boolean().default(true),
+    language: z.enum([
+        "react",
+        "javascript",
+        "typescript",
+        "node",
+        "python",
+        "java",
+        "c",
+        "cpp",
+        "embedded-c"
+    ]),
 
-    examRepoLink: z.url("Invalid URL format"),
+    entry: z.string().min(1).refine(
+        (val) => !val.includes(".."),
+        "Entry file cannot contain path traversal"
+    ),
+
+    editableFolders: z.array(z.string()).min(1),
+
+    excludeOnSubmit: z.array(z.string()).default([]),
+
+    installCommand: z.string().min(1),
+
+    runCommand: z.string().min(1),
+
+    testCommand: z.string().min(1),
 });
 
 export const deleteExamSchema = z.object({
@@ -25,16 +53,6 @@ export const deleteExamSchema = z.object({
 });
 
 export const updateExamSchema = z.object({
-    title: z.string().min(2).trim().optional(),
-
-    description: z.string().trim().optional(),
-
-    difficulty: z.enum(["easy", "medium", "hard"]).optional(),
-
-    duration: z.coerce.number().min(1).max(180).optional(),
-
     isActive: z.coerce.boolean().default(true),
-
     examRepoLink: z.url("Invalid URL format").optional(),
-
 });

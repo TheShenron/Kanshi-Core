@@ -244,7 +244,7 @@ export const getMyHiringDriveExam = async (req: Request, res: Response) => {
         .select("name exams candidates")
         .populate({
             path: "exams",
-            select: "title description difficulty duration isActive examZipFile",
+            select: "title description difficulty duration isActive examRepoLink",
         });
 
 
