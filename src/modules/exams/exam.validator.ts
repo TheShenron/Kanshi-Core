@@ -3,6 +3,7 @@ import { objectIdSchema } from "../hiring-drives/hiringDrive.validator";
 
 export const createExamSchema = z.object({
     isActive: z.coerce.boolean().default(true),
+    releaseUrl: z.url("Invalid URL format"),
     examRepoLink: z.url("Invalid URL format"),
 });
 
@@ -55,4 +56,5 @@ export const deleteExamSchema = z.object({
 export const updateExamSchema = z.object({
     isActive: z.coerce.boolean().default(true),
     examRepoLink: z.url("Invalid URL format").optional(),
+    releaseUrl: z.url("Invalid URL format").optional(),
 });

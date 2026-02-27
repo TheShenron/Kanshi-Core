@@ -61,6 +61,7 @@ const examSchema = new Schema(
         releaseUrl: {
             type: String,
             trim: true,
+            required: true
         },
 
         createdBy: {

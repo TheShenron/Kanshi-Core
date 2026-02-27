@@ -11,7 +11,7 @@ export const createExam = async (req: Request, res: Response) => {
     let repoPath: string | null = null;
 
     try {
-        const { examRepoLink, isActive = true } = req.body;
+        const { examRepoLink, releaseUrl, isActive = true } = req.body;
 
         repoPath = await cloneRepo(examRepoLink);
 
@@ -33,6 +33,7 @@ export const createExam = async (req: Request, res: Response) => {
             runCommand: validatedQuestionConfig.runCommand,
             testCommand: validatedQuestionConfig.testCommand,
             examRepoLink,
+            releaseUrl,
             isActive,
             createdBy: req.user?.id,
             updatedBy: req.user?.id,
@@ -54,7 +55,7 @@ export const createExam = async (req: Request, res: Response) => {
 
 export const updateExam = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { examRepoLink, isActive } = req.body;
+    const { examRepoLink, releaseUrl, isActive } = req.body;
     const userId = req.user!.id;
 
     let repoPath: string | null = null;
@@ -93,6 +94,10 @@ export const updateExam = async (req: Request, res: Response) => {
 
         if (isActive !== undefined && isActive !== null) {
             exam.isActive = isActive;
+        }
+
+        if (releaseUrl) {
+            exam.releaseUrl = releaseUrl;
         }
 
         exam.updatedBy = new Types.ObjectId(userId);
