@@ -184,7 +184,7 @@ export const submitMyExam = async (req: Request, res: Response) => {
     }
 
 
-    const { examId, hiringDriveId, score } = req.body;
+    const { examId, hiringDriveId } = req.body;
     const userId = req.user?.id;
 
     // 1) validate exam exists
@@ -262,8 +262,8 @@ export const submitMyExam = async (req: Request, res: Response) => {
     }
 
     // 5) submit normally
-    attempt.score = score;
-    attempt.isPassed = score >= Number(drive.passingMarks);
+    attempt.score = 0;
+    attempt.isPassed = false;
     attempt.submittedAt = now.toJSDate();
     attempt.durationTaken = Math.floor(now.diff(startedAt, "seconds").seconds);
     attempt.status = "submitted";
