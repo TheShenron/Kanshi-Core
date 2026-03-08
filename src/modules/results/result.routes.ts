@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { deleteExam, getMyExamResultByExamId, getUserExamResultByExamId, getMyExamResult, getUserExamResult, startMyExam, submitMyExam } from "./result.controller";
+import { deleteExam, getMyExamResultByExamId, getUserExamResultByExamId, getMyExamResult, getUserExamResult, startMyExam, submitMyExam, getExamResult, updateExamResult } from "./result.controller";
 import { allowRoles, verifyToken } from "../../middlewares/verify-token";
 import { validateReq } from "../../middlewares/validate-req";
-import { startExamSchema, submitExamSchema, deleteExamxamSchema, getExamResultSchema, getExamResultByExamIdSchema } from "./result.validator";
+import { startExamSchema, submitExamSchema, deleteExamxamSchema, getExamResultSchema, getExamResultByExamIdSchema, getResultSchema, updateResultSchema } from "./result.validator";
 import proctoringRoutes from "../proctoring/proctor.routes";
 import { ADMIN, CANDIDATE, HR } from "../../shared/constants/enums";
 import { upload } from "../../config/multer";
@@ -17,7 +17,8 @@ router.post("/me/submit", verifyToken, upload.single('resultZipFile'), validateR
 // router.delete("/:examId/:hiringDriveId/delete", verifyToken, validateReq({ params: deleteExamxamSchema }), allowRoles(ADMIN), deleteExam);
 // router.get("/:examId/:hiringDriveId/:userId/get-by-exam", verifyToken, validateReq({ params: getExamResultByExamIdSchema }), allowRoles(ADMIN, HR), getUserExamResultByExamId);
 // router.get("/me/:examId/:hiringDriveId/get-by-exam", verifyToken, validateReq({ params: getExamResultByExamIdSchema }), allowRoles(ADMIN, HR), getMyExamResultByExamId);
-// router.get("/me/get/:hiringDriveId", verifyToken, validateReq({ params: getExamResultSchema }), allowRoles(ADMIN, HR), getMyExamResult);
+router.get("/get/:resultId", validateReq({ params: getResultSchema }), getExamResult);
+router.put("/update/result", validateReq({ body: updateResultSchema }), updateExamResult);
 // router.get("/get/:hiringDriveId/:userId", verifyToken, validateReq({ params: getExamResultSchema }), allowRoles(ADMIN, HR), getUserExamResult);
 
 export default router;

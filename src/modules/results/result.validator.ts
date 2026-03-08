@@ -27,5 +27,16 @@ export const getExamResultSchema = z.object({
     userId: objectIdSchema
 });
 
+export const getResultSchema = z.object({
+    resultId: objectIdSchema
+});
+
+export const updateResultSchema = z.object({
+    resultId: objectIdSchema,
+    total: z.number(),
+    passed: z.number(),
+    failed: z.number(),
+});
+
 
 

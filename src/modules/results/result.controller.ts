@@ -351,3 +351,60 @@ export const getUserExamResult = async (req: Request, res: Response) => {
 
     res.json({ success: true, data: result });
 };
+
+export const getExamResult = async (req: Request, res: Response) => {
+    const { resultId } = req.params;
+
+    const result = await Result.findById(resultId)
+        .populate({
+            path: "examId",
+            select: "examId language editableFolders testCommand"
+        })
+        .select("status userId examId resultZipFile")
+        .lean();
+
+    if (!result) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: "Result not found"
+        });
+    }
+
+    res.json({ success: true, data: result });
+};
+
+export const updateExamResult = async (req: Request, res: Response) => {
+    const { resultId, total, passed } = req.body;
+
+    const result = await Result.findById(resultId);
+
+    if (!result) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: "Result not found",
+        });
+    }
+
+    const drive = await HiringDrive.findById(result.hiringDriveId).select("passingMarks");
+
+    if (!drive) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: "Hiring drive not found",
+        });
+    }
+
+    const score = total === 0 ? 0 : Math.round((passed / total) * 100);
+
+    const isPassed = score >= drive.passingMarks;
+
+    result.score = score;
+    result.isPassed = isPassed;
+
+    await result.save();
+
+    return res.json({
+        success: true,
+        message: "Result updated successfully",
+    });
+};
