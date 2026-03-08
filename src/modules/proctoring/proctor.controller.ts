@@ -4,7 +4,8 @@ import { Result } from "../results/result.model";
 import { StatusCodes } from "http-status-codes";
 
 export const addProctoringResult = async (req: Request, res: Response) => {
-    const { resultId } = req.params;
+    // const { resultId } = req.params;
+    const resultId = req.params.resultId as string;
     const { events } = req.body;
 
     const result = await Result.findOne({
