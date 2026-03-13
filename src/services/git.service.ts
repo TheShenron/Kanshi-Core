@@ -20,13 +20,7 @@ export const cloneRepo = async (
     });
 
     try {
-        await git.clone(repoUrl, repoPath, [
-            "--depth",
-            "1",
-            "--branch",
-            "main",
-            "--single-branch",
-        ]);
+        await git.clone(repoUrl, repoPath, ["--depth", "1", "--filter=blob:none"]);
 
         return repoPath;
     } catch (error) {
